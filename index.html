@@ -1,0 +1,758 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>Old Dominion Draw</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#CE3526">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OD Draw">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --paper:#EBE7E1; --card:#FAF7F3; --card-2:#F1ECE5;
+  --ink:#1A1512; --ink-2:#5E554E; --ink-3:#8C817A;
+  --rule:#D9D0C6; --rule-2:#C3B8AB;
+  --accent:#CE3526; --accent-soft:#F6E1DD;
+  --graphite:#3F4E58;
+  --good:#2C6A4C; --warn:#8E610E;
+  --shadow:0 1px 0 rgba(26,21,18,.05), 0 14px 30px -22px rgba(26,21,18,.55);
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --sans:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --disp:"Big Shoulders Display","Big Shoulders","Arial Narrow",Impact,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121110; --card:#1C1918; --card-2:#252120;
+    --ink:#EFE9E2; --ink-2:#A99E95; --ink-3:#7B716A;
+    --rule:#332D28; --rule-2:#48403A;
+    --accent:#FF6250; --accent-soft:#3B211D;
+    --graphite:#93A6B2;
+    --good:#5FB98B; --warn:#D6A344;
+    --shadow:0 1px 0 rgba(0,0,0,.5), 0 18px 34px -24px rgba(0,0,0,.95);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121110; --card:#1C1918; --card-2:#252120;
+  --ink:#EFE9E2; --ink-2:#A99E95; --ink-3:#7B716A;
+  --rule:#332D28; --rule-2:#48403A;
+  --accent:#FF6250; --accent-soft:#3B211D;
+  --graphite:#93A6B2;
+  --good:#5FB98B; --warn:#D6A344;
+  --shadow:0 1px 0 rgba(0,0,0,.5), 0 18px 34px -24px rgba(0,0,0,.95);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+  background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 78%);
+  mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 78%);
+}
+.wrap{position:relative; z-index:1; max-width:1140px; margin:0 auto; padding:34px 22px 70px}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:2px; border-radius:3px}
+
+.masthead{display:flex; flex-wrap:wrap; align-items:flex-end; gap:24px; justify-content:space-between; padding-bottom:20px; border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-2); margin:0}
+h1{font-family:var(--disp); font-weight:800; font-size:clamp(46px,8.4vw,86px); line-height:.86; letter-spacing:-.01em; text-transform:uppercase; margin:.14em 0 0; text-wrap:balance}
+h1 .thin{display:block; color:var(--accent)}
+.lede{max-width:34ch; font-size:14.5px; color:var(--ink-2); margin:0}
+.stamp{
+  font-family:var(--mono); font-size:11px; font-weight:600; line-height:1.4; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--accent); border:2px solid var(--accent); border-radius:3px; padding:8px 11px; max-width:24ch;
+  transform:rotate(-2.2deg); background:transparent; margin:0;
+}
+.stampwrap{display:flex; flex-direction:column; gap:14px; align-items:flex-start}
+
+.layout{display:grid; grid-template-columns:272px minmax(0,1fr); gap:30px; margin-top:30px; align-items:start}
+@media (max-width:920px){ .layout{grid-template-columns:1fr; gap:22px} }
+
+.rail{position:sticky; top:20px}
+@media (max-width:920px){ .rail{position:static} }
+.railhead{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-2); margin:0 0 8px}
+.group{margin-bottom:18px}
+.grouplab{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); padding:0 0 6px 2px; border-bottom:1px dashed var(--rule-2); margin-bottom:6px}
+.gamebtn{
+  display:grid; grid-template-columns:16px 1fr; gap:10px; align-items:start; width:100%; text-align:left;
+  background:transparent; border:0; border-radius:5px; padding:8px 9px; cursor:pointer; color:inherit; font:inherit;
+}
+.gamebtn:hover{background:var(--card-2)}
+.gamebtn .bub{width:15px; height:15px; border:1.5px solid var(--rule-2); border-radius:50%; margin-top:4px; position:relative}
+.gamebtn[aria-pressed="true"]{background:var(--card); box-shadow:var(--shadow)}
+.gamebtn[aria-pressed="true"] .bub{border-color:var(--accent)}
+.gamebtn[aria-pressed="true"] .bub::after{content:""; position:absolute; inset:2.5px; border-radius:50%; background:var(--accent)}
+.gamebtn .nm{font-weight:600; font-size:14.5px; line-height:1.25}
+.gamebtn .fm{font-family:var(--mono); font-size:11.5px; color:var(--ink-3)}
+.gamebtn[aria-pressed="true"] .fm{color:var(--ink-2)}
+
+.edge{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; white-space:nowrap}
+.edge .pip{width:8px; height:8px; border-radius:2px; background:currentColor; flex:none}
+
+.panel{background:var(--card); border:1px solid var(--rule); border-radius:8px; box-shadow:var(--shadow)}
+.gamecard{padding:20px 22px}
+.gamecard h2{font-family:var(--disp); font-weight:800; text-transform:uppercase; font-size:clamp(30px,4.6vw,44px); line-height:.92; margin:0; letter-spacing:-.005em}
+.formula{font-family:var(--mono); font-size:14.5px; font-weight:600; color:var(--accent); margin:8px 0 0}
+.meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(146px,1fr)); gap:14px 18px; margin:18px 0 0; padding-top:16px; border-top:1px dashed var(--rule-2)}
+.meta dt{font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+.meta dd{margin:3px 0 0; font-size:13.5px; font-family:var(--mono); font-variant-numeric:tabular-nums}
+.days{display:flex; gap:4px; flex-wrap:wrap}
+.day{font-family:var(--mono); font-size:10.5px; font-weight:600; padding:2px 5px; border:1px solid var(--rule-2); border-radius:3px; color:var(--ink-3)}
+.day.on{border-color:var(--ink); color:var(--ink)}
+.day.next{background:var(--accent); border-color:var(--accent); color:#fff}
+.drawtime{margin-top:6px; font-size:12.5px; color:var(--ink-3)}
+.note{margin:16px 0 0; padding:12px 14px; background:var(--card-2); border-left:3px solid currentColor; border-radius:0 5px 5px 0; font-size:13.5px; line-height:1.55}
+.note .lab{display:block; margin-bottom:4px}
+.note p{margin:0; color:var(--ink-2)}
+.note.strong{color:var(--good)} .note.moderate{color:var(--warn)} .note.low,.note.none{color:var(--rule-2)}
+.note.low .edge,.note.none .edge{color:var(--ink-3)}
+
+.controls{display:flex; flex-wrap:wrap; gap:16px 22px; align-items:flex-end; margin-top:16px; padding:16px 22px}
+.field{display:flex; flex-direction:column; gap:6px}
+.fieldlab{font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+.seg{display:flex; border:1px solid var(--rule-2); border-radius:5px; overflow:hidden}
+.seg button{font:inherit; font-size:13px; font-weight:500; padding:7px 13px; background:transparent; border:0; border-right:1px solid var(--rule-2); cursor:pointer; color:var(--ink-2)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--paper); font-weight:600}
+.seg button:disabled{opacity:.38; cursor:not-allowed}
+.stepper{display:flex; align-items:center; border:1px solid var(--rule-2); border-radius:5px; overflow:hidden}
+.stepper button{font-family:var(--mono); font-size:16px; width:32px; height:34px; background:transparent; border:0; cursor:pointer; color:var(--ink)}
+.stepper button:hover{background:var(--card-2)}
+.stepper .val{font-family:var(--mono); font-weight:600; min-width:30px; text-align:center; font-variant-numeric:tabular-nums}
+.go{
+  font-family:var(--disp); font-weight:800; text-transform:uppercase; font-size:24px; letter-spacing:.02em; line-height:1;
+  padding:12px 26px 10px; background:var(--accent); color:#fff; border:0; border-radius:5px; cursor:pointer; margin-left:auto;
+  box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 62%, #000);
+}
+.go:hover{filter:brightness(1.06)}
+.go:active{transform:translateY(2px); box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 62%, #000)}
+@media (max-width:600px){ .go{margin-left:0; width:100%} }
+
+.ticketzone{margin-top:18px}
+.ticket{position:relative; background:var(--card); border:1px solid var(--rule); border-radius:3px; box-shadow:var(--shadow); padding:20px 20px 16px; overflow:hidden}
+.ticket::before,.ticket::after{
+  content:""; position:absolute; left:0; right:0; height:7px;
+  background-image:radial-gradient(circle at 6px 0, var(--paper) 5px, transparent 5.3px);
+  background-size:12px 7px; background-repeat:repeat-x;
+}
+.ticket::before{top:0}
+.ticket::after{bottom:0; transform:scaleY(-1)}
+.thead{display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:space-between; align-items:baseline; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); border-bottom:1px dashed var(--rule-2); padding-bottom:10px}
+.line{display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:14px 0; border-bottom:1px dashed var(--rule)}
+.line:last-of-type{border-bottom:0}
+.lineid{font-family:var(--disp); font-weight:800; font-size:26px; line-height:1; color:var(--rule-2); width:22px; flex:none}
+.balls{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.ball{
+  width:44px; height:44px; border-radius:50%; border:1.5px solid var(--ink); background:var(--card); color:var(--ink);
+  display:grid; place-items:center; font-family:var(--mono); font-weight:600; font-size:17px; font-variant-numeric:tabular-nums;
+  animation:pop .34s cubic-bezier(.2,1.4,.5,1) backwards; animation-delay:calc(var(--i,0)*45ms);
+}
+.ball.high{border-color:var(--graphite); box-shadow:inset 0 0 0 4px color-mix(in srgb,var(--graphite) 14%, transparent)}
+.ball.bonus{background:var(--accent); border-color:var(--accent); color:#fff}
+.ball.digit{border-radius:5px; width:42px; height:50px; font-size:22px}
+.plus{font-family:var(--mono); color:var(--ink-3); font-size:14px; padding:0 2px}
+@keyframes pop{from{opacity:0; transform:scale(.55) translateY(6px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){ .ball{animation:none} }
+.linetail{margin-left:auto; display:flex; align-items:center; gap:8px}
+.score{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:3px 8px; border-radius:3px; border:1px solid currentColor}
+.score.hi{color:var(--good)} .score.mid{color:var(--warn)} .score.lo{color:var(--ink-3)}
+.iconbtn{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; background:transparent; border:1px solid var(--rule-2); border-radius:3px; padding:4px 8px; cursor:pointer; color:var(--ink-2)}
+.iconbtn:hover{border-color:var(--ink); color:var(--ink)}
+.why{flex-basis:100%; margin:0; padding:0}
+.why[hidden]{display:none}
+.whylist{list-style:none; margin:8px 0 2px; padding:0 0 0 2px; display:grid; gap:5px}
+.whylist li{display:grid; grid-template-columns:12px 1fr; gap:9px; align-items:start; font-size:13px; color:var(--ink-2); line-height:1.45}
+.whylist .dot{width:7px; height:7px; border-radius:50%; margin-top:6px; background:var(--good)}
+.whylist li.miss .dot{background:transparent; border:1.5px solid var(--ink-3); width:8px; height:8px; margin-top:5px}
+.tactions{display:flex; flex-wrap:wrap; gap:8px; padding-top:14px; margin-top:4px; border-top:1px dashed var(--rule-2)}
+.empty{padding:38px 22px; text-align:center; color:var(--ink-3); font-family:var(--mono); font-size:13px}
+.panel.empty{background:var(--card)}
+
+.saved{margin-top:28px}
+.sechead{display:flex; align-items:baseline; justify-content:space-between; gap:14px; border-bottom:2px solid var(--ink); padding-bottom:7px; margin-bottom:14px}
+.sechead h3{font-family:var(--disp); font-weight:800; text-transform:uppercase; font-size:26px; margin:0; line-height:1}
+.savedrow{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; padding:12px 16px; border:1px solid var(--rule); border-radius:5px; background:var(--card); margin-bottom:8px}
+.meta2{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.06em; text-transform:uppercase}
+.savedrow .nums{font-family:var(--mono); font-size:13.5px; font-variant-numeric:tabular-nums; line-height:1.75; margin-top:2px}
+.savedrow .rowtail{margin-left:auto; display:flex; gap:6px}
+
+.edgedoc{margin-top:48px}
+.doccols{display:grid; grid-template-columns:repeat(auto-fit,minmax(252px,1fr)); gap:20px}
+.doccard{padding:18px 20px 20px; background:var(--card); border:1px solid var(--rule); border-radius:8px}
+.doccard h4{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin:0 0 8px; color:var(--accent)}
+.doccard p{margin:0 0 9px; font-size:14px; color:var(--ink-2); line-height:1.6; max-width:62ch}
+.doccard p:last-child{margin-bottom:0}
+.doccard strong{color:var(--ink); font-weight:600}
+footer{margin-top:44px; padding-top:18px; border-top:1px solid var(--rule); font-size:12.5px; color:var(--ink-3); display:grid; gap:7px; max-width:80ch}
+
+.toast{
+  position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(12px); opacity:0; pointer-events:none;
+  background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+  padding:9px 16px; border-radius:4px; transition:opacity .18s ease, transform .18s ease; z-index:20;
+}
+.toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Virginia Lottery &middot; draw games &middot; rules verified 30 Aug 2026</p>
+      <h1>Old Dominion<span class="thin">Draw</span></h1>
+    </div>
+    <div class="stampwrap">
+      <p class="stamp">Nothing changes your odds of winning. This changes what you keep when you do.</p>
+      <p class="lede">Pick a game, get numbers built to dodge the combinations everyone else is playing.</p>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="rail">
+      <p class="railhead">Select a game</p>
+      <div id="gamelist"></div>
+    </aside>
+
+    <section class="stage">
+      <div class="panel gamecard" id="gamecard"></div>
+      <div class="panel controls" id="controls"></div>
+      <div class="ticketzone" id="ticketzone"></div>
+
+      <section class="saved">
+        <div class="sechead">
+          <h3>Saved picks</h3>
+          <button class="iconbtn" id="clearall" type="button">Clear all</button>
+        </div>
+        <div id="savedlist"></div>
+      </section>
+    </section>
+  </div>
+
+  <section class="edgedoc">
+    <div class="sechead"><h3>Where the edge actually is</h3></div>
+    <div class="doccols">
+      <div class="doccard">
+        <h4>The one real lever</h4>
+        <p>Every combination has identical odds of being drawn. That is arithmetic, not a puzzle anyone can solve.</p>
+        <p>What you <strong>can</strong> change is how many people are standing next to you when your combination hits. On Powerball, Mega Millions and Cash 5 the jackpot is divided among all winning plays. Pick numbers the crowd avoids and your expected payout goes up, even though your chance of winning does not move an inch.</p>
+      </div>
+      <div class="doccard">
+        <h4>The birthday zone</h4>
+        <p>Most hand-picked tickets are dates &mdash; birthdays, anniversaries, kids' ages. That crams the crowd into <strong>1 through 31</strong>, and hardest of all into 1 through 12.</p>
+        <p>Numbers above 31 get picked far less often. On a 1&ndash;69 board that is more than half the pool sitting underplayed. Every set this machine builds pushes most of its numbers up there &mdash; those are the ones with the grey ring.</p>
+      </div>
+      <div class="doccard">
+        <h4>Shapes on the slip</h4>
+        <p>People mark playslips visually: a straight line down a column, a diagonal, five in a row, everything ending in the same digit, 5&ndash;10&ndash;15&ndash;20&ndash;25.</p>
+        <p>Each candidate set gets scored against the playslip's 5-wide grid, and sets that draw a shape get thrown back &mdash; rows, columns, runs of three, even spacing, all-odd or all-even, and clusters inside one decade.</p>
+      </div>
+      <div class="doccard">
+        <h4>What this will not pretend</h4>
+        <p><strong>Hot and cold numbers are not a thing.</strong> Balls have no memory. A number drawn nine times last year is exactly as likely tonight as one drawn zero times, so no frequency charts ship here &mdash; they would be decoration sold as insight.</p>
+        <p>On fixed-prize games &mdash; Pick 3, Pick 4, Pick 5, Cash Pop, Keno &mdash; there is no split to protect, so the machine switches itself to honest uniform random and tells you why.</p>
+      </div>
+      <div class="doccard">
+        <h4>Playing several lines</h4>
+        <p>When you take more than one line, the machine keeps the lines from reusing each other's numbers. The expected return is identical, but spreading them gives you a noticeably better chance of hitting <em>something</em> rather than nothing on a given night.</p>
+      </div>
+      <div class="doccard">
+        <h4>The honest ceiling</h4>
+        <p>Crowd-avoidance is worth real money on a shared jackpot. It is still bolted to a game that keeps roughly 35&ndash;50 cents of every dollar, and no selection method touches that part.</p>
+        <p>This is a better-designed way to lose slowly, with a bigger payday on the night the improbable happens. Budget like that is the deal, because it is.</p>
+      </div>
+    </div>
+    <footer>
+      <div>Rules, prices and draw times taken from valottery.com on 30 August 2026. Check the current playslip before you buy &mdash; the Commonwealth moves things around: Cash 5 now runs 1&ndash;45, the Mega Ball dropped to 1&ndash;24 in the April 2025 overhaul, and Cash4Life was retired in favour of Millionaire for Life.</div>
+      <div>Must be 18 or older to play. Virginia Problem Gambling Helpline: 1-888-532-3500.</div>
+    </footer>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var ALL=[0,1,2,3,4,5,6];
+
+var GAMES=[
+{id:"powerball",name:"Powerball",cat:"Jackpot games",
+ main:{k:5,min:1,max:69}, bonus:{min:1,max:26,label:"Powerball"},
+ price:"$2 per play (+$1 Power Play)", days:[1,3,6], time:"11:00 p.m.",
+ odds:"1 in 292,201,338", prize:"Rolling jackpot", edge:"strong",
+ note:"The jackpot is divided among everyone holding the winning combination. Avoiding the crowd will not help you hit it — it means fewer people to split it with when you do. Highest-stakes place to use this."},
+{id:"megamillions",name:"Mega Millions",cat:"Jackpot games",
+ main:{k:5,min:1,max:70}, bonus:{min:1,max:24,label:"Mega Ball"},
+ price:"$5 per play", days:[2,5], time:"11:00 p.m.",
+ odds:"1 in 290,472,336", prize:"Rolling jackpot, $50M floor", edge:"strong",
+ note:"Same split rule as Powerball. Since the April 2025 overhaul the Mega Ball pool is down to 24 and every play carries a built-in 2x–10x multiplier on non-jackpot prizes."},
+{id:"cash5",name:"Cash 5 with EZ Match",cat:"Virginia games",
+ main:{k:5,min:1,max:45},
+ price:"$1 per play (+$1 EZ Match)", days:ALL, time:"11:00 p.m.",
+ odds:"1 in 1,221,759", prize:"Jackpot starts at $200,000", edge:"strong",
+ note:"Virginia divides this jackpot equally among winning plays, and at 1-in-1.2-million it gets hit often enough that co-winners are a genuine risk. Best edge per dollar on the board."},
+{id:"millionaireforlife",name:"Millionaire for Life",cat:"Virginia games",
+ main:{k:5,min:1,max:58}, bonus:{min:1,max:5,label:"Millionaire Ball"},
+ price:"$5 per play", days:ALL, time:"11:15 p.m.",
+ odds:"1 in 22,910,580", prize:"$1,000,000 a year for life", edge:"moderate",
+ note:"For-life top prizes come out of a limited fund, so a draw with several winners can mean a divided prize. Worth dodging the crowd. The Millionaire Ball only runs 1–5, so there is nothing to optimise there — it is drawn straight."},
+{id:"bankamillion",name:"Bank a Million",cat:"Virginia games",
+ main:{k:6,min:1,max:40},
+ price:"$2 per play (or two $1 plays)", days:[3,6], time:"11:00 p.m.",
+ odds:"1 in 3,838,380", prize:"$1,000,000 after taxes", edge:"low",
+ note:"A set prize rather than a growing jackpot, so extra winners do much less damage to your share. The optimiser still runs because it costs nothing, but treat the edge as cosmetic. Only nine numbers sit above 31 here, so picks skew high out of necessity."},
+{id:"pick3",name:"Pick 3",cat:"Daily digit games", digits:3,
+ price:"$1 or 50¢ per play", days:ALL, time:"1:59 p.m. and 11:00 p.m.",
+ odds:"1 in 1,000 exact order", prize:"$500 on a $1 exact-order play", edge:"none",
+ note:"Fixed prizes. A $1 exact-order hit pays $500 whether you were the only winner or one of ten thousand — so 1-2-3 and 7-7-7 pay exactly what anything else pays. No crowd to avoid, so these are straight uniform random. FIREBALL doubles the cost of the play for extra combinations."},
+{id:"pick4",name:"Pick 4",cat:"Daily digit games", digits:4,
+ price:"$1 or 50¢ per play", days:ALL, time:"1:59 p.m. and 11:00 p.m.",
+ odds:"1 in 10,000 exact order", prize:"$5,000 on a $1 exact-order play", edge:"none",
+ note:"Fixed prizes, so nothing about your selection changes the payout. Straight uniform random. FIREBALL is available and doubles the cost of the play."},
+{id:"pick5",name:"Pick 5",cat:"Daily digit games", digits:5,
+ price:"$1 or 50¢ per play", days:ALL, time:"1:59 p.m. and 11:00 p.m.",
+ odds:"1 in 100,000 exact order", prize:"$50,000 on a $1 exact-order play", edge:"none",
+ note:"Fixed prizes, so nothing about your selection changes the payout. Straight uniform random. FIREBALL is available and doubles the cost of the play."},
+{id:"cashpop",name:"Cash Pop",cat:"Daily digit games", pool:{min:1,max:15}, vary:{min:1,max:5,label:"Numbers to play",def:1},
+ price:"$1, $2, $5 or $10 per number", days:ALL, time:"9a · 12p · 5p · 9p · 11:59p",
+ odds:"1 in 15 per number", prize:"Up to $2,500 on a $10 wager", edge:"none",
+ note:"One number from 1–15 is drawn per pop. Your prize amount is printed on the ticket before the draw, so your selection cannot change what you win. Uniform random."},
+{id:"keno",name:"Keno",cat:"Daily digit games", pool:{min:1,max:80}, vary:{min:1,max:10,label:"Spots",def:4},
+ price:"$1 to $10 per draw", days:ALL, time:"Every 4 minutes",
+ odds:"Varies by spot count", prize:"Up to $1,000,000", edge:"none",
+ note:"Twenty numbers are drawn from 1–80 and the prize table is fixed by spot count, so nothing you pick moves the payout. Uniform random."}
+];
+
+var POPULAR={3:1,7:1,11:1,17:1,21:1,23:1,27:1,33:1};
+var state={game:GAMES[0], lines:3, mode:"edge", vary:null, results:[]};
+var $=function(s){return document.querySelector(s)};
+function el(t,c,tx){var n=document.createElement(t); if(c)n.className=c; if(tx!=null)n.textContent=tx; return n}
+
+function load(){ try{ var r=localStorage.getItem("vaslip.v1"); return r?JSON.parse(r):[]; }catch(e){ return []; } }
+function store(a){ try{ localStorage.setItem("vaslip.v1",JSON.stringify(a.slice(0,60))); }catch(e){} }
+
+function rint(n){ return Math.floor(Math.random()*n); }
+function range(a,b){ var r=[],i; for(i=a;i<=b;i++) r.push(i); return r; }
+function sample(pool,k){
+  var p=pool.slice(), out=[], i;
+  for(i=0;i<k && p.length;i++){ out.push(p.splice(rint(p.length),1)[0]); }
+  return out;
+}
+function asc(a,b){ return a-b; }
+
+function analyze(nums,max,used){
+  var k=nums.length, s=nums.slice().sort(asc), pen=0, checks=[], i;
+  function add(ok,txt,p){ checks.push({ok:ok,txt:txt}); if(!ok) pen+=p; }
+
+  var highPool=Math.max(0,max-31), high=0;
+  for(i=0;i<k;i++) if(s[i]>31) high++;
+  if(highPool>=2){
+    var target=Math.min(highPool,Math.max(2,Math.round(k*0.6)));
+    add(high>=target,
+      high>=target ? high+" of "+k+" numbers sit above 31, clear of the birthday crowd"
+                   : "Only "+high+" of "+k+" numbers clear 31 — most players stop at their birthday",
+      14*Math.max(1,target-high));
+  }
+
+  var run=1,maxRun=1,pairs=0;
+  for(i=1;i<k;i++){ if(s[i]===s[i-1]+1){ run++; pairs++; } else { run=1; } if(run>maxRun) maxRun=run; }
+  add(maxRun<3, maxRun<3 ? "No run of three consecutive numbers" : "Contains "+maxRun+" consecutive numbers in a row", 18);
+  if(maxRun<3) add(pairs<2, pairs<2 ? "At most one adjacent pair" : "Several adjacent pairs read as a marked line", 8);
+
+  if(k>=4){
+    var arith=true, d=s[1]-s[0];
+    for(i=2;i<k;i++) if(s[i]-s[i-1]!==d) arith=false;
+    add(!arith, arith ? "Evenly spaced — a classic slip pattern" : "Irregular spacing, not a ladder down the slip", 26);
+  }
+
+  var digs={}, worstD=0, dd;
+  for(i=0;i<k;i++){ dd=s[i]%10; digs[dd]=(digs[dd]||0)+1; if(digs[dd]>worstD) worstD=digs[dd]; }
+  add(worstD<3, worstD<3 ? "No three numbers sharing a last digit" : worstD+" numbers end in the same digit", 12);
+
+  var cols={},rows={},wc=0,wr=0,c,r;
+  for(i=0;i<k;i++){
+    c=(s[i]-1)%5; r=Math.ceil(s[i]/5);
+    cols[c]=(cols[c]||0)+1; rows[r]=(rows[r]||0)+1;
+    if(cols[c]>wc) wc=cols[c]; if(rows[r]>wr) wr=rows[r];
+  }
+  add(wc<3 && wr<3, (wc<3&&wr<3) ? "Draws no line or column on the playslip grid" : "Three or more marks land in one row or column of the slip", 12);
+
+  var dec={},wd=0,q;
+  for(i=0;i<k;i++){ q=Math.floor((s[i]-1)/10); dec[q]=(dec[q]||0)+1; if(dec[q]>wd) wd=dec[q]; }
+  add(wd<3, wd<3 ? "Spread across the board, not bunched in one decade" : wd+" numbers crowded into a single decade", 9);
+
+  var odd=0; for(i=0;i<k;i++) if(s[i]%2) odd++;
+  add(odd>0 && odd<k, (odd>0&&odd<k) ? "Mixed odd and even" : "All "+(odd?"odd":"even")+" — a pattern people play on purpose", 10);
+
+  var pop=0; for(i=0;i<k;i++) if(POPULAR[s[i]]) pop++;
+  add(pop<2, pop<2 ? "Steers clear of the lucky-number favourites" : "Leans on "+pop+" of the usual lucky numbers", 5*Math.max(1,pop-1));
+
+  if(used && used.size && max>=k*2){
+    var rep=0; for(i=0;i<k;i++) if(used.has(s[i])) rep++;
+    add(rep===0, rep===0 ? "Shares no numbers with your other lines" : "Repeats "+rep+" number"+(rep>1?"s":"")+" from another line", 6*rep);
+  }
+
+  return {score:Math.max(0,Math.min(100,100-pen)), checks:checks};
+}
+
+function buildSet(cfg,mode,used){
+  var lo=[],hi=[],i,best=null;
+  for(i=cfg.min;i<=cfg.max;i++){ if(i>31) hi.push(i); else lo.push(i); }
+  if(mode==="random"){
+    var r=sample(range(cfg.min,cfg.max),cfg.k).sort(asc);
+    return {nums:r, meta:analyze(r,cfg.max,used)};
+  }
+  var wantHigh=Math.min(hi.length, mode==="edge" ? Math.max(2,Math.round(cfg.k*0.6)) : Math.max(1,Math.round(cfg.k*0.4)));
+  var tries=(mode==="edge")?320:120, accept=(mode==="edge")?96:74;
+  for(i=0;i<tries;i++){
+    var cand;
+    if(hi.length>=wantHigh && lo.length>=cfg.k-wantHigh){
+      cand=sample(hi,wantHigh).concat(sample(lo,cfg.k-wantHigh));
+    } else {
+      cand=sample(range(cfg.min,cfg.max),cfg.k);
+    }
+    cand.sort(asc);
+    var m=analyze(cand,cfg.max,used);
+    if(!best || m.score>best.meta.score) best={nums:cand, meta:m};
+    if(m.score>=accept) break;
+  }
+  return best;
+}
+function buildBonus(b,mode){
+  if(!b) return null;
+  if(mode==="random" || b.max<20) return b.min+rint(b.max-b.min+1);
+  return 13+rint(b.max-12);
+}
+
+function generate(){
+  var g=state.game, out=[], used=new Set(), i, j;
+  var mode=(g.edge==="none") ? "random" : state.mode;
+  for(i=0;i<state.lines;i++){
+    if(g.digits){
+      var d=[]; for(j=0;j<g.digits;j++) d.push(rint(10));
+      out.push({digits:d});
+    } else if(g.pool){
+      out.push({nums:sample(range(g.pool.min,g.pool.max), state.vary).sort(asc)});
+    } else {
+      var set=buildSet(g.main,mode,used);
+      set.nums.forEach(function(x){ used.add(x); });
+      set.bonus=buildBonus(g.bonus,mode);
+      out.push(set);
+    }
+  }
+  state.results=out;
+  renderTicket();
+}
+
+function formula(g){
+  if(g.digits) return g.digits+" digits, 0–9";
+  if(g.pool) return "1–"+g.pool.max+", you choose how many";
+  var f=g.main.k+" of "+g.main.min+"–"+g.main.max;
+  if(g.bonus) f+=" + 1 of "+g.bonus.min+"–"+g.bonus.max;
+  return f;
+}
+var EDGEWORD={strong:"Strong edge",moderate:"Moderate edge",low:"Marginal edge",none:"No edge exists"};
+function edgeBadge(g){
+  var s=el("span","edge"); s.appendChild(el("span","pip"));
+  s.appendChild(document.createTextNode(EDGEWORD[g.edge]));
+  return s;
+}
+function nextDrawDay(g){
+  var t=new Date().getDay(), i, d;
+  for(i=0;i<7;i++){ d=(t+i)%7; if(g.days.indexOf(d)>=0) return d; }
+  return -1;
+}
+
+function renderGames(){
+  var host=$("#gamelist"), cats=[];
+  host.innerHTML="";
+  GAMES.forEach(function(g){ if(cats.indexOf(g.cat)<0) cats.push(g.cat); });
+  cats.forEach(function(cat){
+    var grp=el("div","group");
+    grp.appendChild(el("div","grouplab",cat));
+    GAMES.filter(function(g){ return g.cat===cat; }).forEach(function(g){
+      var b=el("button","gamebtn"); b.type="button";
+      b.setAttribute("aria-pressed", g.id===state.game.id ? "true" : "false");
+      b.appendChild(el("span","bub"));
+      var box=el("span");
+      box.appendChild(el("span","nm",g.name));
+      box.appendChild(document.createElement("br"));
+      box.appendChild(el("span","fm",formula(g)));
+      b.appendChild(box);
+      b.addEventListener("click",function(){
+        state.game=g; state.results=[];
+        state.vary=g.vary?g.vary.def:null;
+        renderGames(); renderCard(); renderControls(); renderTicket();
+      });
+      grp.appendChild(b);
+    });
+    host.appendChild(grp);
+  });
+}
+
+function renderCard(){
+  var g=state.game, c=$("#gamecard");
+  c.innerHTML="";
+  c.appendChild(el("h2",null,g.name));
+  var line = g.digits ? "Pick "+g.digits+" digits, each 0 through 9"
+    : g.pool ? "Pick any numbers you like from 1 through "+g.pool.max
+    : "Pick "+g.main.k+" numbers from "+g.main.min+" through "+g.main.max+(g.bonus ? "   +   1 "+g.bonus.label+" from "+g.bonus.min+" through "+g.bonus.max : "");
+  c.appendChild(el("p","formula",line));
+
+  var dl=el("dl","meta");
+  function row(t,v){
+    dl.appendChild(el("dt",null,t));
+    var d=el("dd");
+    if(typeof v==="string") d.textContent=v; else d.appendChild(v);
+    dl.appendChild(d);
+  }
+  row("Ticket",g.price);
+  row("Top prize",g.prize);
+  row("Jackpot odds",g.odds);
+  var nd=nextDrawDay(g), wrap=el("div"), days=el("div","days");
+  DAYS.forEach(function(nm,ix){
+    var on=g.days.indexOf(ix)>=0;
+    days.appendChild(el("span","day"+(on?" on":"")+(ix===nd?" next":""),nm));
+  });
+  wrap.appendChild(days);
+  wrap.appendChild(el("div","drawtime",g.time));
+  row("Draws",wrap);
+  c.appendChild(dl);
+
+  var note=el("div","note "+g.edge);
+  var lab=el("span","lab"); lab.appendChild(edgeBadge(g));
+  note.appendChild(lab);
+  note.appendChild(el("p",null,g.note));
+  c.appendChild(note);
+}
+
+function renderControls(){
+  var g=state.game, host=$("#controls"), noEdge=(g.edge==="none");
+  host.innerHTML="";
+
+  var f1=el("div","field"); f1.appendChild(el("span","fieldlab","Lines"));
+  var st=el("div","stepper");
+  var minus=el("button",null,"–"); minus.type="button"; minus.setAttribute("aria-label","One line fewer");
+  var val=el("span","val",String(state.lines));
+  var plus=el("button",null,"+"); plus.type="button"; plus.setAttribute("aria-label","One line more");
+  minus.onclick=function(){ state.lines=Math.max(1,state.lines-1); val.textContent=state.lines; };
+  plus.onclick=function(){ state.lines=Math.min(10,state.lines+1); val.textContent=state.lines; };
+  st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
+  f1.appendChild(st); host.appendChild(f1);
+
+  if(g.vary){
+    var f3=el("div","field"); f3.appendChild(el("span","fieldlab",g.vary.label));
+    var st2=el("div","stepper");
+    var m2=el("button",null,"–"); m2.type="button"; m2.setAttribute("aria-label","Fewer");
+    var v2=el("span","val",String(state.vary));
+    var p2=el("button",null,"+"); p2.type="button"; p2.setAttribute("aria-label","More");
+    m2.onclick=function(){ state.vary=Math.max(g.vary.min,state.vary-1); v2.textContent=state.vary; };
+    p2.onclick=function(){ state.vary=Math.min(g.vary.max,state.vary+1); v2.textContent=state.vary; };
+    st2.appendChild(m2); st2.appendChild(v2); st2.appendChild(p2);
+    f3.appendChild(st2); host.appendChild(f3);
+  }
+
+  var f2=el("div","field");
+  f2.appendChild(el("span","fieldlab", noEdge ? "Method — fixed prizes, random only" : "Method"));
+  var seg=el("div","seg");
+  [["edge","Max edge"],["balanced","Balanced"],["random","True random"]].forEach(function(o){
+    var b=el("button",null,o[1]); b.type="button";
+    b.setAttribute("aria-pressed",(noEdge ? o[0]==="random" : state.mode===o[0]) ? "true" : "false");
+    if(noEdge && o[0]!=="random") b.disabled=true;
+    b.onclick=function(){ state.mode=o[0]; renderControls(); };
+    seg.appendChild(b);
+  });
+  f2.appendChild(seg); host.appendChild(f2);
+
+  var go=el("button","go","Generate"); go.type="button";
+  go.onclick=generate;
+  host.appendChild(go);
+}
+
+function ballEl(n,i,kind){
+  var b=el("span","ball"+(kind?" "+kind:""),String(n));
+  b.style.setProperty("--i",i);
+  return b;
+}
+function scoreClass(s){ return s>=88 ? "hi" : s>=72 ? "mid" : "lo"; }
+function lineText(r){
+  if(r.digits) return r.digits.join(" ");
+  var t=r.nums.join("  ");
+  if(r.bonus!=null) t+="   + "+r.bonus;
+  return t;
+}
+function modeWord(){
+  var g=state.game;
+  if(g.edge==="none") return "Uniform random";
+  return state.mode==="edge" ? "Max edge" : state.mode==="balanced" ? "Balanced" : "Uniform random";
+}
+
+function renderTicket(){
+  var host=$("#ticketzone"), g=state.game;
+  host.innerHTML="";
+  if(!state.results.length){
+    host.appendChild(el("div","panel empty","Set your options, then hit generate"));
+    return;
+  }
+  var t=el("div","ticket");
+  var head=el("div","thead");
+  head.appendChild(el("span",null,g.name));
+  head.appendChild(el("span",null, modeWord()+" · "+state.results.length+(state.results.length>1?" lines":" line")));
+  t.appendChild(head);
+
+  state.results.forEach(function(r,ix){
+    var row=el("div","line");
+    row.appendChild(el("span","lineid",String.fromCharCode(65+ix)));
+    var balls=el("div","balls"), bi=0;
+    if(r.digits){
+      r.digits.forEach(function(d){ balls.appendChild(ballEl(d,bi++,"digit")); });
+    } else {
+      r.nums.forEach(function(n){ balls.appendChild(ballEl(n,bi++, n>31 ? "high" : null)); });
+      if(r.bonus!=null){
+        balls.appendChild(el("span","plus","+"));
+        balls.appendChild(ballEl(r.bonus,bi++,"bonus"));
+      }
+    }
+    row.appendChild(balls);
+
+    var tail=el("div","linetail");
+    var panel=null;
+    if(r.meta){
+      tail.appendChild(el("span","score "+scoreClass(r.meta.score),"Edge "+r.meta.score));
+      panel=el("div","why"); panel.hidden=true;
+      var ul=el("ul","whylist");
+      r.meta.checks.forEach(function(ch){
+        var li=el("li",ch.ok?null:"miss");
+        li.appendChild(el("span","dot"));
+        li.appendChild(el("span",null,ch.txt));
+        ul.appendChild(li);
+      });
+      panel.appendChild(ul);
+      var why=el("button","iconbtn","Why"); why.type="button";
+      why.setAttribute("aria-expanded","false");
+      why.onclick=function(){
+        panel.hidden=!panel.hidden;
+        why.textContent=panel.hidden?"Why":"Hide";
+        why.setAttribute("aria-expanded", panel.hidden?"false":"true");
+      };
+      tail.appendChild(why);
+    }
+    var re=el("button","iconbtn","Redraw"); re.type="button";
+    re.onclick=function(){
+      var mode=(g.edge==="none")?"random":state.mode, j;
+      if(g.digits){
+        var d=[]; for(j=0;j<g.digits;j++) d.push(rint(10));
+        state.results[ix]={digits:d};
+      } else if(g.pool){
+        state.results[ix]={nums:sample(range(g.pool.min,g.pool.max),state.vary).sort(asc)};
+      } else {
+        var used=new Set();
+        state.results.forEach(function(o,k){ if(k!==ix && o.nums) o.nums.forEach(function(x){ used.add(x); }); });
+        var s=buildSet(g.main,mode,used);
+        s.bonus=buildBonus(g.bonus,mode);
+        state.results[ix]=s;
+      }
+      renderTicket();
+    };
+    tail.appendChild(re);
+    row.appendChild(tail);
+    if(panel) row.appendChild(panel);
+    t.appendChild(row);
+  });
+
+  var acts=el("div","tactions");
+  var again=el("button","iconbtn","Generate again"); again.type="button"; again.onclick=generate;
+  var copy=el("button","iconbtn","Copy all lines"); copy.type="button";
+  copy.onclick=function(){
+    var txt=g.name+" — "+new Date().toLocaleDateString()+"\n"+state.results.map(function(r,i){
+      return String.fromCharCode(65+i)+"  "+lineText(r);
+    }).join("\n");
+    toClipboard(txt);
+  };
+  var sv=el("button","iconbtn","Save these picks"); sv.type="button";
+  sv.onclick=function(){
+    var a=load();
+    a.unshift({g:g.name, d:new Date().toISOString(), m:modeWord(),
+      lines:state.results.map(function(r){ return {t:lineText(r)}; })});
+    store(a); renderSaved(); toast("Saved");
+  };
+  acts.appendChild(again); acts.appendChild(copy); acts.appendChild(sv);
+  t.appendChild(acts);
+  host.appendChild(t);
+}
+
+function renderSaved(){
+  var host=$("#savedlist"), a=load();
+  host.innerHTML="";
+  if(!a.length){
+    host.appendChild(el("div","empty","Nothing saved yet — generate a set and save it to keep track of what you played"));
+    return;
+  }
+  a.forEach(function(rec,ix){
+    var row=el("div","savedrow"), left=el("div"), dt=new Date(rec.d);
+    left.appendChild(el("div","meta2", rec.g+" · "+dt.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})+" · "+(rec.m||"")));
+    var nums=el("div","nums");
+    rec.lines.forEach(function(l,i){
+      var d=el("div");
+      d.appendChild(el("span","meta2",String.fromCharCode(65+i)+"  "));
+      d.appendChild(document.createTextNode(l.t));
+      nums.appendChild(d);
+    });
+    left.appendChild(nums);
+    row.appendChild(left);
+    var tailw=el("div","rowtail");
+    var cp=el("button","iconbtn","Copy"); cp.type="button";
+    cp.onclick=function(){
+      toClipboard(rec.g+" — "+dt.toLocaleDateString()+"\n"+rec.lines.map(function(l,i){
+        return String.fromCharCode(65+i)+"  "+l.t;
+      }).join("\n"));
+    };
+    var del=el("button","iconbtn","Delete"); del.type="button";
+    del.onclick=function(){ var arr=load(); arr.splice(ix,1); store(arr); renderSaved(); };
+    tailw.appendChild(cp); tailw.appendChild(del);
+    row.appendChild(tailw);
+    host.appendChild(row);
+  });
+}
+
+var toastT=null;
+function toast(msg){
+  var t=$("#toast"); t.textContent=msg; t.classList.add("on");
+  if(toastT) clearTimeout(toastT);
+  toastT=setTimeout(function(){ t.classList.remove("on"); },1700);
+}
+function toClipboard(txt){
+  function fallback(){
+    try{
+      var ta=document.createElement("textarea");
+      ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+      toast("Copied");
+    }catch(e){ toast("Copy blocked — select the numbers by hand"); }
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast("Copied"); },fallback);
+  } else { fallback(); }
+}
+
+$("#clearall").onclick=function(){ store([]); renderSaved(); toast("Cleared"); };
+
+renderGames(); renderCard(); renderControls(); renderTicket(); renderSaved();
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}
+</script>
+</body></html>
